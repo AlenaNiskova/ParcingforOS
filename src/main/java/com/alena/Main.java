@@ -9,21 +9,28 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     /*ПАРСИМ ВК.НОВОСТИ.
     * НАДО ОРГАНИЗОВАТЬ ВХОД В УЧЁТНУЮ ЗАПИСЬ. - сделано
-    * ИСПОЛЬЗОВАТЬ LINQ (JOOQ) ЗАПРОСЫ ВМЕСТО ЦИКЛОВ
     * ИНФОРМАЦИЯ ПАРСИТСЯ В 3 ПОТОКА (ТЕКСТ, КАРТИНКИ, ССЫЛКИ) - в процессе
     * И ПОМЕЩАЕТСЯ В ФАЙЛ JSON.
     * ОРГАНИЗОВАТЬ ДВА ПРОЦЕССА ДЛЯ JSON:
     * ОДИН ВЫПИСЫВАЕТ ИНФОРМАЦИЮ ИЗ ФАЙЛА В БД,
-    * ДРУГОЙ - НА ЭКРАН, ДЛЯ ВЫВОДА НА ЭКРАН ИСПОЛЬЗУЮ GUI*/
+    * ДРУГОЙ - НА ЭКРАН, ДЛЯ ВЫВОДА НА ЭКРАН ИСПОЛЬЗУЮ GUI
+    * ПРИ ВЫТАСКИВАНИИ ИНФОРМАЦИИ ИЗ JSON ИСПОЛЬЗОВАТЬ
+    * LINQ (JOOQ) ЗАПРОСЫ ВМЕСТО ЦИКЛОВ*/
 
     static String ProjectsPath = "C:\\Users\\Alena\\IdeaProjects\\";
 
     public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Введите, сколько записей вы желаете пропарсить:");
+        int n = in.nextInt();
+
         System.setProperty("webdriver.chrome.driver", ProjectsPath+"ParcingforOS\\chromedriver.exe");
 
         //path to special Chrome cash, so I don't need to sign in to my VK-account

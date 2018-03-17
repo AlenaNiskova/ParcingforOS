@@ -16,10 +16,16 @@ public class Texts implements Runnable {
 
     public void run() {
         WebElement TextElement;
+        WebElement ShowFullText;
         List<String> Text = new ArrayList<String>(WallPosts.size());
 
         for (int i=0; i < WallPosts.size(); i++) {
             try {
+                try {
+                    ShowFullText = WallPosts.get(i).findElement(By.className("wall_post_more"));
+                    ShowFullText.click();
+                }
+                catch (NoSuchElementException d) { }
                 TextElement = WallPosts.get(i).findElement(By.className("wall_post_text"));
                 Text.add(TextElement.getText());
             }

@@ -1,6 +1,7 @@
 package com.alena;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -14,6 +15,17 @@ public class Pics implements Runnable {
     }
 
     public void run() {
+        WebElement ImageElement;
+        List<String> Link = new ArrayList<String>(WallPosts.size());
 
+        /*for (int i=0; i < WallPosts.size(); i++) {
+            try {
+                ImageElement = WallPosts.get(i).findElement(By.cssSelector(".wall_post_text > a[href]"));
+                Link.add(ImageElement.getAttribute("href"));
+            }
+            catch (NoSuchElementException e) {
+                Link.add("");
+            }
+        }*/
     }
 }
