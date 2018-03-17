@@ -1,12 +1,16 @@
 package com.alena;
 
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pics implements Runnable {
-    WebDriver driver;
+    List<WebElement> WallPosts;
 
-    Pics(WebDriver driver) {
-        this.driver = driver;
+    Pics(List<WebElement> WallPosts) {
+        this.WallPosts = WallPosts;
     }
 
     public void run() {

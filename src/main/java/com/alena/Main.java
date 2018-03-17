@@ -1,14 +1,20 @@
 package com.alena;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.util.List;
 
 public class Main {
     /*ПАРСИМ ВК.НОВОСТИ.
     * НАДО ОРГАНИЗОВАТЬ ВХОД В УЧЁТНУЮ ЗАПИСЬ. - сделано
+    * ИСПОЛЬЗОВАТЬ LINQ (JOOQ) ЗАПРОСЫ ВМЕСТО ЦИКЛОВ
     * ИНФОРМАЦИЯ ПАРСИТСЯ В 3 ПОТОКА (ТЕКСТ, КАРТИНКИ, ССЫЛКИ) - в процессе
     * И ПОМЕЩАЕТСЯ В ФАЙЛ JSON.
     * ОРГАНИЗОВАТЬ ДВА ПРОЦЕССА ДЛЯ JSON:
@@ -20,7 +26,7 @@ public class Main {
     public static void main(String[] args) {
         System.setProperty("webdriver.chrome.driver", ProjectsPath+"ParcingforOS\\chromedriver.exe");
 
-        //path to Chrome cash, so I don't need to sign in to my VK-account
+        //path to special Chrome cash, so I don't need to sign in to my VK-account
         String chrome_cash_path = "--user-data-dir="+ProjectsPath+"ChromeCash";
 
         ChromeOptions options = new ChromeOptions();
@@ -34,14 +40,19 @@ public class Main {
         //Checks that the directory for saved pictures already exists and if not, creates that directory
         picsDirectory();
 
+        WebElement dynamicElement = (new WebDriverWait(driver, 10))
+                .until(ExpectedConditions.presenceOfElementLocated(By.className("wall_text")));
+
+        List<WebElement> WallPosts = driver.findElements(By.className("wall_text"));
+
         //thread for parsing texts
-        new Thread(new Texts(driver), "TextsParsing").start();
+        new Thread(new Texts(WallPosts), "TextsParsing").start();
 
         //thread for parsing links
-        new Thread(new Links(driver), "LinksParsing").start();
+        //new Thread(new Links(WallPosts), "LinksParsing").start();
 
         //thread for parsing pictures
-        new Thread(new Pics(driver), "PicsParsing").start();
+        //new Thread(new Pics(WallPosts), "PicsParsing").start();
 
         //driver.quit();
     }
