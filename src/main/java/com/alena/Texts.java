@@ -1,6 +1,7 @@
 package com.alena;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -14,15 +15,20 @@ public class Texts implements Runnable {
     }
 
     public void run() {
+        WebElement TextElement;
+        List<String> Text = new ArrayList<String>(WallPosts.size());
 
-        List<WebElement> TextElements = WallPosts.get(0).findElements(By.className("wall_post_text"));
-        List<String> Text = new ArrayList<String>();
-        for (WebElement e: TextElements) {
-            Text.add(e.getText());
+        for (int i=0; i < WallPosts.size(); i++) {
+            try {
+                TextElement = WallPosts.get(i).findElement(By.className("wall_post_text"));
+                Text.add(TextElement.getText());
+            }
+            catch (NoSuchElementException e) {
+                Text.add("");
+            }
         }
-        /*for (int i = 0; i < Text.size(); i++) {
-            System.out.println(Text.get(i));
-            System.out.println();
-        }*/
+        for (int i = 0; i < Text.size(); i++) {
+            System.out.println(Text.get(i)+"\n\n");
+        }
     }
 }
