@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ParcingforOS.iml" filepath="$PROJECT_DIR$/ParcingforOS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ParcingwithSelenium.iml" filepath="$PROJECT_DIR$/ParcingwithSelenium.iml" />
     </modules>
   </component>
 </project>

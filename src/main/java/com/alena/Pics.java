@@ -16,7 +16,7 @@ public class Pics implements Runnable {
 
     public void run() {
         WebElement ImageElement;
-        List<String> Link = new ArrayList<String>(WallPosts.size());
+        List<String> Image = new ArrayList<String>(WallPosts.size());
 
         /*for (int i=0; i < WallPosts.size(); i++) {
             try {

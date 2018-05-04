@@ -1,6 +1,7 @@
 package com.alena;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,9 +10,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class Main {
     /*ПАРСИМ ВК.НОВОСТИ.
@@ -31,7 +32,7 @@ public class Main {
         System.out.println("Введите, сколько записей вы желаете пропарсить:");
         int n = in.nextInt();
 
-        System.setProperty("webdriver.chrome.driver", ProjectsPath+"ParcingforOS\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", ProjectsPath+"ParcingwithSelenium\\chromedriver.exe");
 
         //path to special Chrome cash, so I don't need to sign in to my VK-account
         String chrome_cash_path = "--user-data-dir="+ProjectsPath+"ChromeCash";
@@ -48,18 +49,35 @@ public class Main {
         picsDirectory();
 
         WebElement dynamicElement = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.className("wall_text")));
+                .until(ExpectedConditions.presenceOfElementLocated(By.className("feed_row")));
 
-        List<WebElement> WallPosts = driver.findElements(By.className("wall_text"));
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        List<WebElement> WallPosts = driver.findElements(By.className("feed_row"));
+
+        while (WallPosts.size() < n) {
+            js.executeScript("window.scrollBy(0, 50);");
+            WallPosts = driver.findElements(By.className("feed_row"));
+        }
+        WallPosts.subList(n, WallPosts.size()).clear();
+
+        Pizdets pizdets = new Pizdets("JSON.json");
 
         //thread for parsing texts
-        new Thread(new Texts(WallPosts), "TextsParsing").start();
+        //new Thread(new Texts(WallPosts, forjson), "TextsParsing").start();
 
         //thread for parsing links
-        //new Thread(new Links(WallPosts), "LinksParsing").start();
+        new Thread(new Links(WallPosts, pizdets), "LinksParsing").start();
 
         //thread for parsing pictures
         //new Thread(new Pics(WallPosts), "PicsParsing").start();
+
+/*        try {
+            FileWriter fw = new FileWriter(pizdets.getJsonpath(), true);
+            fw.write("]\n}");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
 
         //driver.quit();
     }
