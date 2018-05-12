@@ -9,7 +9,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.awt.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
@@ -84,6 +83,7 @@ public class Main {
             e.printStackTrace();
         }
 
+        //creates user interface
         GUI gui = new GUI(jsonWork.FromJSONMap());
 
         driver.quit();

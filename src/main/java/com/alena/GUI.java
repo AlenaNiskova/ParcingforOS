@@ -7,6 +7,14 @@ import java.util.Map;
 
 public class GUI extends JFrame {
 
+    //Don't wanna say anything, 'cause it was really hard to create this GUI.
+    //But! It's beautiful and understandable interface.
+    //Elements build in one column and has different sizes, which is works
+    //because of GridBagLayout.
+    //Front-end development is harder than I think (._.).
+    //P.S. Links in TextArea, 'cause I need their background to be transparent.
+    //TextArea.setOpaque(false) is really helpful with it.
+    //Borders are for beauty and distinction.
     public GUI(Map<String, Record> JSONMap) {
         JFrame frame = new JFrame("ВК Новости");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,7 +82,8 @@ public class GUI extends JFrame {
                 num++;
             }
 
-            Post.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory.createEmptyBorder(25,25,25,25)));
+            Post.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED),
+                    BorderFactory.createEmptyBorder(25,25,25,25)));
             Post.revalidate();
             allbag.gridy = count;
             allbag.anchor = GridBagConstraints.WEST;

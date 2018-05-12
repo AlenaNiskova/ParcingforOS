@@ -18,6 +18,9 @@ public class JSONWork {
     private final String jsonpath;
     private boolean isFileExists;
 
+    //Creates file, if it's not exists. Read all records' IDs and remembers them in HashMap,
+    //'cause HashMap is usable to quick searching. Locks file, while using it.
+    //Using RandomAccessFile, 'cause FileLock works only with FileChannel.
     public JSONWork(String jsonpath) {
         this.jsonpath = jsonpath;
         File file = new File(jsonpath);
@@ -71,6 +74,7 @@ public class JSONWork {
         check(rec);
     }
 
+    //Void to check, that record is full and ready to be written in JSON.
     private void check(Record rec){
         if ((rec.getText()!=null)&&(rec.getLinks()!=null)&&(rec.getPics()!=null)) {
             if (!IDinJson.contains(rec.getId())) {
@@ -82,6 +86,8 @@ public class JSONWork {
         else { toJSONMap.put(rec.getId(), rec);}
     }
 
+    //Void to write record in JSON. Locks file, while using it.
+    //Using RandomAccessFile, 'cause FileLock works only with FileChannel.
     private void write(Record rec) {
         try {
             int count = 1;
@@ -109,6 +115,9 @@ public class JSONWork {
         }
     }
 
+    //Reading from the JSON-file in public HashMap to convey it into GUI.
+    //Locks file, while using it. Using RandomAccessFile, 'cause FileLock works
+    //only with FileChannel. Don't forget to decode String, 'cause it's UTF-8!!!
     public Map<String, Record> FromJSONMap() {
         Map<String, Record> From = new HashMap<String, Record>();
         String st, strec;
