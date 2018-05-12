@@ -1,36 +1,32 @@
 package com.alena;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Texts implements Runnable {
     List<WebElement> WallPosts;
+    JSONWork jsonWork;
 
-    Texts(List<WebElement> WallPosts) {
+    Texts(List<WebElement> WallPosts, JSONWork jsonWork) {
         this.WallPosts = WallPosts;
+        this.jsonWork = jsonWork;
     }
 
     public void run() {
-        Map<String, Record> forjson = new HashMap<String, Record>();
-        WebElement TextElement;
-        String Text = "";
-        Record rec = new Record();
+        List<WebElement> TextList;
+        String Text;
         String id;
 
         for (int i=0; i < WallPosts.size(); i++) {
-            id = WallPosts.get(i).findElement(By.className("_post post page_block post_likes_test_group_-1")).getAttribute("id");
-            try {
-                TextElement = WallPosts.get(i).findElement(By.className("wall_post_text"));
-                Text = TextElement.getText();
+            Text = "";
+            id = WallPosts.get(i).findElement(By.cssSelector("div > div")).getAttribute("id");
+            TextList = WallPosts.get(i).findElements(By.className("wall_post_text"));
+            for (WebElement TextEl: TextList) {
+                Text = TextList.get(0).getText();
             }
-            catch (NoSuchElementException e) {
-            }
+            jsonWork.addText(id, Text);
         }
     }
 }
