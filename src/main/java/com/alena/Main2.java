@@ -75,6 +75,7 @@ public class Main2 {
                 }
                 strec = strec + st;
                 st = RAF.readLine();
+                if (st==null) {return null;}
                 if (!st.startsWith(" ]")) {
                     strec = strec.substring(0, strec.length()-1);
                 }

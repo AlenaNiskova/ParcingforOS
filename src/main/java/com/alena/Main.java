@@ -90,7 +90,7 @@ public class Main {
             RandomAccessFile RAF = new RandomAccessFile("JSON.json", "rw");
             FileChannel FChan = RAF.getChannel();
             FileLock Lock = FChan.lock();
-            RAF.seek(RAF.length());
+            RAF.seek(RAF.length()-5);
             RAF.write("\n ]\n}".getBytes());
             Lock.release();
             RAF.close();

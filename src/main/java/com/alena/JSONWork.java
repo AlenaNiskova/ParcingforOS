@@ -42,11 +42,11 @@ public class JSONWork {
                     }
                 }
                 pos = RAFile.getFilePointer()-4;
-                String st = "\n";
+                String st = "     ";
                 byte[] inputBytes = st.getBytes();
                 RAFile.seek(pos);
                 RAFile.write(inputBytes);
-                pos = RAFile.getFilePointer()-1;
+                pos = RAFile.getFilePointer()-5;
             }
             FLock.release();
             RAFile.close();
@@ -103,15 +103,15 @@ public class JSONWork {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String StToGSON;
             if (!isFileExists){
-                StToGSON = gson.toJson(rec);
+                StToGSON = gson.toJson(rec)+"     ";
                 isFileExists = true;
             } else {
-                StToGSON = ",\n" + gson.toJson(rec);
+                StToGSON = ",\n" + gson.toJson(rec)+"     ";
             }
             byte[] inputBytes = StToGSON.getBytes();
             RAF.seek(pos);
             RAF.write(inputBytes);
-            pos = RAF.getFilePointer();
+            pos = RAF.getFilePointer()-5;
             lock.release();
             RAF.close();
         } catch (FileNotFoundException e) {
