@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.*;
@@ -17,9 +16,10 @@ public class JSONWork {
     private Set<String> IDinJson = new HashSet<String>();
     private final String jsonpath;
     private boolean isFileExists;
+    private long pos;
 
     //Creates file, if it's not exists. Read all records' IDs and remembers them in HashMap,
-    //'cause HashMap is usable to quick searching. Locks file, while using it.
+    //'cause HashMap is usable to quick searching. Locks file while using it.
     //Using RandomAccessFile, 'cause FileLock works only with FileChannel.
     public JSONWork(String jsonpath) {
         this.jsonpath = jsonpath;
@@ -30,7 +30,8 @@ public class JSONWork {
             FileChannel FChannel = RAFile.getChannel();
             FileLock FLock = FChannel.lock();
             if (!isFileExists) {
-                RAFile.writeBytes("{ \"array\": [\n     ");
+                RAFile.writeBytes("{ \"array\": [\n");
+                pos = RAFile.getFilePointer();
             }
             else {
                 String id = "";
@@ -40,6 +41,12 @@ public class JSONWork {
                         IDinJson.add(id.substring(9, id.length()-2));
                     }
                 }
+                pos = RAFile.getFilePointer()-4;
+                String st = "\n";
+                byte[] inputBytes = st.getBytes();
+                RAFile.seek(pos);
+                RAFile.write(inputBytes);
+                pos = RAFile.getFilePointer()-1;
             }
             FLock.release();
             RAFile.close();
@@ -86,28 +93,27 @@ public class JSONWork {
         else { toJSONMap.put(rec.getId(), rec);}
     }
 
-    //Void to write record in JSON. Locks file, while using it.
+    //Void to write record in JSON. Locks file while using it.
     //Using RandomAccessFile, 'cause FileLock works only with FileChannel.
     private void write(Record rec) {
         try {
-            int count = 1;
             RandomAccessFile RAF = new RandomAccessFile(jsonpath, "rw");
             FileChannel FChan = RAF.getChannel();
             FileLock lock = FChan.lock();
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String StToGSON;
             if (!isFileExists){
-                StToGSON = gson.toJson(rec) + "\n ]\n}";
+                StToGSON = gson.toJson(rec);
                 isFileExists = true;
             } else {
-                StToGSON = ",\n" + gson.toJson(rec) + "\n ]\n}";
+                StToGSON = ",\n" + gson.toJson(rec);
             }
             byte[] inputBytes = StToGSON.getBytes();
-            ByteBuffer buf = ByteBuffer.wrap(inputBytes);
-            FChan.write(buf, RAF.length()-5);
+            RAF.seek(pos);
+            RAF.write(inputBytes);
+            pos = RAF.getFilePointer();
             lock.release();
             RAF.close();
-            count++;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -116,10 +122,10 @@ public class JSONWork {
     }
 
     //Reading from the JSON-file in public HashMap to convey it into GUI.
-    //Locks file, while using it. Using RandomAccessFile, 'cause FileLock works
+    //Locks file while using it. Using RandomAccessFile, 'cause FileLock works
     //only with FileChannel. Don't forget to decode String, 'cause it's UTF-8!!!
-    public Map<String, Record> FromJSONMap() {
-        Map<String, Record> From = new HashMap<String, Record>();
+    public Set<Record> FromJSONSet() {
+        Set<Record> From = new LinkedHashSet<Record>();
         String st, strec;
         Record rec;
         try {
@@ -142,7 +148,7 @@ public class JSONWork {
                 }
                 strec = new String(strec.getBytes("ISO-8859-1"), "UTF-8");
                 rec = gson.fromJson(strec, Record.class);
-                From.put(rec.getId(), rec);
+                From.add(rec);
             }
             Lock.release();
             RAF.close();

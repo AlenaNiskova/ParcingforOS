@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.util.Map;
+import java.util.Set;
 
 public class GUI extends JFrame {
 
@@ -15,7 +16,7 @@ public class GUI extends JFrame {
     //P.S. Links in TextArea, 'cause I need their background to be transparent.
     //TextArea.setOpaque(false) is really helpful with it.
     //Borders are for beauty and distinction.
-    public GUI(Map<String, Record> JSONMap) {
+    public GUI(Set<Record> JSONSet) {
         JFrame frame = new JFrame("ВК Новости");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int count = 0;
@@ -25,7 +26,7 @@ public class GUI extends JFrame {
         GridBagConstraints allbag = new GridBagConstraints();
         allbag.gridx = 0;
 
-        for (Record rec: JSONMap.values()) {
+        for (Record rec: JSONSet) {
             JPanel Post = new JPanel();
             Post.setLayout(new GridBagLayout());
             GridBagConstraints bag = new GridBagConstraints();
@@ -33,7 +34,7 @@ public class GUI extends JFrame {
             bag.gridx = 0;
 
             String Text = rec.getText();
-            if ((Text!="")||(Text!="\n")) {
+            if (Text!="") {
                 JTextArea Area = new JTextArea();
                 Area.setText(Text);
                 Area.setWrapStyleWord(true);
@@ -89,8 +90,11 @@ public class GUI extends JFrame {
             allbag.anchor = GridBagConstraints.WEST;
             allbag.insets.left = 10;
             allbag.insets.bottom = 50;
-            panel.add(Post, allbag);
-            count++;
+            String ID = rec.getId();
+            if (!ID.startsWith("ads_feed_placeholder")) {
+                panel.add(Post, allbag);
+                count++;
+            }
         }
         panel.revalidate();
 
@@ -98,7 +102,7 @@ public class GUI extends JFrame {
         Scroll.getVerticalScrollBar().setUnitIncrement(20);
         frame.getContentPane().add(Scroll);
 
-        frame.setPreferredSize(new Dimension(800, 600));
+        frame.setPreferredSize(new Dimension(1000, 700));
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

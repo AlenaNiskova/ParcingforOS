@@ -10,6 +10,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.*;
 import java.util.List;
 
@@ -26,6 +30,7 @@ public class Main {
     static String ProjectsPath = "C:\\Users\\Alena\\IdeaProjects\\";
 
     public static void main(String[] args) {
+        JSONWork jsonWork = new JSONWork("JSON.json");
 
         Scanner in = new Scanner(System.in);
         System.out.println("Введите, сколько записей вы желаете пропарсить:");
@@ -61,8 +66,6 @@ public class Main {
         }
         WallPosts.subList(n, WallPosts.size()).clear();
 
-        JSONWork jsonWork = new JSONWork("JSON.json");
-
         //thread for parsing texts
         Thread texts = new Thread(new Texts(WallPosts, jsonWork), "TextsParsing");
 
@@ -83,10 +86,22 @@ public class Main {
             e.printStackTrace();
         }
 
-        //creates user interface
-        GUI gui = new GUI(jsonWork.FromJSONMap());
+        try {
+            RandomAccessFile RAF = new RandomAccessFile("JSON.json", "rw");
+            FileChannel FChan = RAF.getChannel();
+            FileLock Lock = FChan.lock();
+            RAF.seek(RAF.length());
+            RAF.write("\n ]\n}".getBytes());
+            Lock.release();
+            RAF.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //creates user interface
+        Set<Record> JSON = jsonWork.FromJSONSet();
         driver.quit();
+        GUI gui = new GUI(JSON);
     }
 
     public static void picsDirectory() {
